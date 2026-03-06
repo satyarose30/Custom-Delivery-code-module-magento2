@@ -152,6 +152,11 @@ class Config
         return $value !== '' ? $value : (string) __('Sorry, delivery is not available for zip code %1.');
     }
 
+    public function getCheckoutErrorMessageForZip(string $zipCode, ?int $storeId = null): string
+    {
+        return str_replace('%1', $zipCode, $this->getCheckoutErrorMessage($storeId));
+    }
+
     // ── Customer Groups ────────────────────────────────────────────────────────
 
     /**
