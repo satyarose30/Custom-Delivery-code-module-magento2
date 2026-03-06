@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="Custom_DeliveryRestriction::css/zip-checker.css"/>
+    </head>
+    <body>
+        <!--
+            Place the zip checker directly inside product.info.main,
+            after the add-to-cart form so it stays contextually close.
+            Works for simple, configurable, bundled and grouped products.
+        -->
+        <referenceContainer name="product.info.main">
+            <block class="Custom\DeliveryRestriction\Block\Product\ZipChecker"
+                   name="custom.delivery.restriction.zip.checker"
+                   template="Custom_DeliveryRestriction::product/zip_checker.phtml"
+                   after="product.info.addtocart"/>
+        </referenceContainer>
+    </body>
+</page>

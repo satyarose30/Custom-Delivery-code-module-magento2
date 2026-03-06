@@ -1,0 +1,78 @@
+<!--
+    Custom_DeliveryRestriction — Admin Restricted Zip Code Alert Email
+    Triggered when a customer attempts to order to a blocked zip code.
+-->
+<!--@subject Restricted Zip Code Attempted — {{var store_name}} @-->
+<!--@vars
+{
+    "var zip_code":       "Blocked Zip Code",
+    "var customer_name":  "Customer Full Name",
+    "var customer_email": "Customer Email Address",
+    "var store_name":     "Store Name"
+}
+@-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+<body style="font-family: Arial, sans-serif; background-color:#f5f5f5; margin:0; padding:20px;">
+<table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px; margin:0 auto;">
+    <tr>
+        <td style="background-color:#d32f2f; padding:20px 24px; border-radius:6px 6px 0 0;">
+            <h1 style="color:#fff; margin:0; font-size:18px; font-weight:700;">
+                ⚠ Delivery Restriction Alert
+            </h1>
+        </td>
+    </tr>
+    <tr>
+        <td style="background-color:#fff; padding:24px; border:1px solid #e0e0e0; border-top:none; border-radius:0 0 6px 6px;">
+
+            <p style="margin:0 0 16px; color:#333; font-size:14px; line-height:1.6;">
+                A customer attempted to place an order to a <strong>restricted zip code</strong>
+                on <strong>{{var store_name}}</strong>. The order was blocked automatically.
+            </p>
+
+            <table width="100%" cellpadding="8" cellspacing="0"
+                   style="border:1px solid #e0e0e0; border-radius:4px; margin-bottom:20px; font-size:14px;">
+                <tr style="background-color:#f5f5f5;">
+                    <td style="font-weight:700; width:40%; color:#555; border-bottom:1px solid #e0e0e0;">
+                        Blocked Zip Code
+                    </td>
+                    <td style="color:#d32f2f; font-weight:700; font-size:16px; border-bottom:1px solid #e0e0e0;">
+                        {{var zip_code}}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="font-weight:700; color:#555; border-bottom:1px solid #e0e0e0;">
+                        Customer Name
+                    </td>
+                    <td style="color:#333; border-bottom:1px solid #e0e0e0;">
+                        {{var customer_name}}
+                    </td>
+                </tr>
+                <tr style="background-color:#f5f5f5;">
+                    <td style="font-weight:700; color:#555;">
+                        Customer Email
+                    </td>
+                    <td style="color:#333;">
+                        <a href="mailto:{{var customer_email}}" style="color:#1565c0;">
+                            {{var customer_email}}
+                        </a>
+                    </td>
+                </tr>
+            </table>
+
+            <p style="margin:0; color:#777; font-size:12px; border-top:1px solid #eee; padding-top:16px;">
+                This is an automated alert from the
+                <strong>Custom Delivery Restriction &amp; Zip Checker</strong> module
+                on {{var store_name}}. You can manage restricted zip codes under
+                <em>Stores → Configuration → Custom Extensions → Delivery Restriction</em>
+                or via the <em>Marketing → Delivery Restriction → Manage Zip Codes</em> grid.
+            </p>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

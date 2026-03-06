@@ -1,0 +1,26 @@
+{
+    "name": "custom/module-delivery-restriction",
+    "description": "Magento 2 Delivery Restriction & Zip Code Availability Checker — combines Meetanshi Restrict Zip Codes + MageDelight Delivery Availability Checker",
+    "type": "magento2-module",
+    "version": "1.0.0",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.1",
+        "magento/framework": "*",
+        "magento/module-checkout": "*",
+        "magento/module-catalog": "*",
+        "magento/module-quote": "*",
+        "magento/module-sales": "*",
+        "magento/module-store": "*",
+        "magento/module-backend": "*",
+        "magento/module-config": "*"
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Custom\\DeliveryRestriction\\": ""
+        }
+    }
+}

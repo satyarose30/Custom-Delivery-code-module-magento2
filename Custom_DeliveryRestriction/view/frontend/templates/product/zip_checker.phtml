@@ -1,0 +1,61 @@
+<?php
+/**
+ * @var \Custom\DeliveryRestriction\Block\Product\ZipChecker $block
+ */
+declare(strict_types=1);
+
+if (!$block->isEnabled()) {
+    return;
+}
+?>
+<div class="dr-zip-checker-wrapper" id="dr-zip-checker-widget">
+
+    <div class="dr-header">
+        <svg class="dr-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+             fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M1 3h15v13H1zM16 8h4l3 3v5h-7V8z"/>
+            <circle cx="5.5" cy="18.5" r="2.5"/>
+            <circle cx="18.5" cy="18.5" r="2.5"/>
+        </svg>
+        <h3 class="dr-title"><?= $block->getWidgetTitle() ?></h3>
+    </div>
+
+    <div class="dr-form">
+        <div class="dr-input-row">
+            <input
+                type="text"
+                id="dr-zip-input"
+                class="dr-zip-input input-text"
+                placeholder="<?= $block->getInputPlaceholder() ?>"
+                maxlength="10"
+                autocomplete="postal-code"
+                aria-label="<?= $block->escapeHtml(__('Zip / Postal Code')) ?>"
+                inputmode="text"
+            />
+            <button
+                type="button"
+                id="dr-zip-btn"
+                class="dr-check-btn action primary"
+                aria-label="<?= $block->escapeHtml(__('Check delivery availability')) ?>"
+            >
+                <span><?= $block->escapeHtml(__('Check')) ?></span>
+            </button>
+        </div>
+
+        <div id="dr-loading" class="dr-loading" style="display:none;" role="status" aria-live="polite">
+            <span class="dr-spinner" aria-hidden="true"></span>
+            <?= $block->escapeHtml(__('Checking availability…')) ?>
+        </div>
+
+        <div id="dr-result" class="dr-result" style="display:none;" role="alert" aria-live="assertive"></div>
+    </div>
+
+</div>
+
+<script type="text/x-magento-init">
+{
+    "#dr-zip-checker-widget": {
+        "Custom_DeliveryRestriction/js/zip-checker": <?= /* @noEscape */ $block->getComponentConfigJson() ?>
+    }
+}
+</script>

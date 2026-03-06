@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <!--
+        Fires just before the quote is converted to an order.
+        Throwing LocalizedException here stops the order completely.
+    -->
+    <event name="sales_model_service_quote_submit_before">
+        <observer name="custom_delivery_restriction_validate_zip_on_order"
+                  instance="Custom\DeliveryRestriction\Observer\ValidateZipOnOrderPlace"/>
+    </event>
+</config>

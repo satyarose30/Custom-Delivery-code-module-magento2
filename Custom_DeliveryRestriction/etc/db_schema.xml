@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!--
+    Declarative schema (Magento 2.3+).
+    Table: custom_dr_zipcode
+    Purpose: Persistent, per-entry zip code management with status, customer-group
+             scope, category scope, and admin notes. Replaces / supplements the
+             plain-text system-config textarea.
+-->
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+
+    <table name="custom_dr_zipcode" resource="default" engine="innodb"
+           comment="Custom Delivery Restriction — Managed Zip Codes">
+
+        <column xsi:type="int"       name="zipcode_id"          nullable="false" identity="true" unsigned="true" comment="Primary Key"/>
+        <column xsi:type="varchar"   name="zip_code"            nullable="false" length="20"    comment="Zip / Postal Code Pattern (exact, wildcard, or range)"/>
+        <column xsi:type="varchar"   name="restriction_type"    nullable="false" length="10" default="blacklist" comment="blacklist or whitelist"/>
+        <column xsi:type="smallint"  name="status"              nullable="false" default="1"    comment="1=Active 0=Disabled"/>
+        <column xsi:type="text"      name="customer_group_ids"  nullable="true"                 comment="Comma-separated customer group IDs; NULL means all groups"/>
+        <column xsi:type="text"      name="category_ids"        nullable="true"                 comment="Comma-separated category IDs; NULL means all categories"/>
+        <column xsi:type="varchar"   name="store_ids"           nullable="true"  length="255"   comment="Comma-separated store IDs; NULL means all stores"/>
+        <column xsi:type="varchar"   name="description"         nullable="true"  length="255"   comment="Admin notes"/>
+        <column xsi:type="timestamp" name="created_at"          nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <column xsi:type="timestamp" name="updated_at"          nullable="false" default="CURRENT_TIMESTAMP" on_update="true" comment="Updated At"/>
+
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="zipcode_id"/>
+        </constraint>
+
+        <index referenceId="CUSTOM_DR_ZIPCODE_ZIP_CODE" indexType="btree">
+            <column name="zip_code"/>
+        </index>
+
+        <index referenceId="CUSTOM_DR_ZIPCODE_STATUS" indexType="btree">
+            <column name="status"/>
+        </index>
+    </table>
+
+</schema>

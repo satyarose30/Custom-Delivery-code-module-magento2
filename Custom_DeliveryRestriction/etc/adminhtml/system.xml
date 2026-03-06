@@ -1,0 +1,227 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <s>
+        <tab id="custom_extensions" translate="label" sortOrder="400">
+            <label>Custom Extensions</label>
+        </tab>
+
+        <section id="delivery_restriction"
+                 translate="label"
+                 type="text"
+                 sortOrder="100"
+                 showInDefault="1"
+                 showInWebsite="1"
+                 showInStore="1">
+            <class>separator-top</class>
+            <label>Delivery Restriction &amp; Zip Checker</label>
+            <tab>custom_extensions</tab>
+            <resource>Custom_DeliveryRestriction::config</resource>
+
+            <!-- ==================== GENERAL ==================== -->
+            <group id="general" translate="label" type="text" sortOrder="10"
+                   showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>General Settings</label>
+
+                <field id="enabled" translate="label" type="select" sortOrder="10"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Module</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
+                <field id="use_db_zipcodes" translate="label comment" type="select" sortOrder="15"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Zip Code Source</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[
+                        <strong>No (default):</strong> Use the textarea below (quick setup).<br/>
+                        <strong>Yes:</strong> Use the <em>Marketing → Delivery Restriction → Manage Zip Codes</em>
+                        admin grid (supports per-entry customer groups, categories, stores, and descriptions).
+                    ]]></comment>
+                    <depends><field id="enabled">1</field></depends>
+                </field>
+
+                <field id="restriction_type" translate="label comment" type="select" sortOrder="20"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Restriction Mode (Textarea source)</label>
+                    <source_model>Custom\DeliveryRestriction\Model\Config\Source\RestrictionType</source_model>
+                    <comment><![CDATA[
+                        Only used when <em>Zip Code Source</em> = No.<br/>
+                        <strong>Blacklist:</strong> Listed zips blocked. <strong>Whitelist:</strong> Only listed zips allowed.
+                    ]]></comment>
+                    <depends><field id="enabled">1</field></depends>
+                </field>
+
+                <field id="zip_codes" translate="label comment" type="textarea" sortOrder="30"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Zip / Postal Codes (Textarea)</label>
+                    <comment><![CDATA[
+                        One per line. Supports: exact <code>10001</code>,
+                        wildcard <code>100*</code>, range <code>10000-10099</code>, UK <code>SW1A*</code>.
+                    ]]></comment>
+                    <depends><field id="enabled">1</field></depends>
+                </field>
+
+                <field id="error_message" translate="label" type="text" sortOrder="40"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Default Error Message</label>
+                    <depends><field id="enabled">1</field></depends>
+                </field>
+            </group>
+
+            <!-- ==================== CUSTOMER GROUPS (MageDelight feature) ==================== -->
+            <group id="customer_groups" translate="label" type="text" sortOrder="15"
+                   showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Customer Group Restrictions</label>
+
+                <field id="enabled" translate="label comment" type="select" sortOrder="10"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Customer Group Scoping</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>When enabled, zip restrictions only apply to selected customer groups. All others can order freely.</comment>
+                </field>
+
+                <field id="group_ids" translate="label comment" type="multiselect" sortOrder="20"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Restricted Customer Groups</label>
+                    <source_model>Custom\DeliveryRestriction\Model\Config\Source\CustomerGroups</source_model>
+                    <comment>Zip code restrictions apply ONLY to these groups. Leave empty to apply to all groups.</comment>
+                    <depends><field id="enabled">1</field></depends>
+                </field>
+            </group>
+
+            <!-- ==================== PRODUCT PAGE ==================== -->
+            <group id="product_page" translate="label" type="text" sortOrder="20"
+                   showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Product Page Widget</label>
+
+                <field id="enabled" translate="label" type="select" sortOrder="10"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Show Zip Checker on Product Page</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
+                <field id="widget_title" translate="label" type="text" sortOrder="20"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Widget Title</label>
+                    <depends><field id="enabled">1</field></depends>
+                </field>
+
+                <field id="available_message" translate="label" type="text" sortOrder="30"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Available Message</label>
+                    <depends><field id="enabled">1</field></depends>
+                </field>
+
+                <field id="unavailable_message" translate="label" type="text" sortOrder="40"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Unavailable Message</label>
+                    <depends><field id="enabled">1</field></depends>
+                </field>
+
+                <field id="input_placeholder" translate="label" type="text" sortOrder="50"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Input Placeholder Text</label>
+                    <depends><field id="enabled">1</field></depends>
+                </field>
+            </group>
+
+            <!-- ==================== DELIVERY ESTIMATE ==================== -->
+            <group id="delivery_estimate" translate="label" type="text" sortOrder="30"
+                   showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Delivery Date Estimation</label>
+
+                <field id="enabled" translate="label comment" type="select" sortOrder="10"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Show Estimated Delivery Date</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Shown after a successful zip check. Skips weekends.</comment>
+                </field>
+
+                <field id="min_days" translate="label comment" type="text" sortOrder="20"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Minimum Delivery Days</label>
+                    <validate>validate-digits validate-greater-than-zero</validate>
+                    <comment>Business days only (Mon–Fri).</comment>
+                    <depends><field id="enabled">1</field></depends>
+                </field>
+
+                <field id="max_days" translate="label comment" type="text" sortOrder="30"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Maximum Delivery Days</label>
+                    <validate>validate-digits validate-greater-than-zero</validate>
+                    <depends><field id="enabled">1</field></depends>
+                </field>
+            </group>
+
+            <!-- ==================== CHECKOUT ==================== -->
+            <group id="checkout" translate="label" type="text" sortOrder="40"
+                   showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Checkout Restriction</label>
+
+                <field id="block_order" translate="label comment" type="select" sortOrder="10"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Block Orders for Restricted Zip Codes</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Validates at both shipping step AND final order placement.</comment>
+                </field>
+
+                <field id="checkout_error_message" translate="label comment" type="text" sortOrder="20"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Checkout Error Message</label>
+                    <comment>Use %1 as placeholder for the customer's zip code.</comment>
+                    <depends><field id="block_order">1</field></depends>
+                </field>
+            </group>
+
+            <!-- ==================== EMAIL NOTIFICATION (MageDelight feature) ==================== -->
+            <group id="email" translate="label" type="text" sortOrder="50"
+                   showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Admin Email Notification</label>
+
+                <field id="enabled" translate="label comment" type="select" sortOrder="10"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Send Admin Alert Email</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Sends an email to the admin when a customer is blocked due to a restricted zip code.</comment>
+                </field>
+
+                <field id="sender" translate="label" type="select" sortOrder="20"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Email Sender</label>
+                    <source_model>Magento\Config\Model\Config\Source\Email\Identity</source_model>
+                    <depends><field id="enabled">1</field></depends>
+                </field>
+
+                <field id="recipient" translate="label comment" type="text" sortOrder="30"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Recipient Email</label>
+                    <validate>validate-email</validate>
+                    <comment>Email address to receive the blocked zip code alerts.</comment>
+                    <depends><field id="enabled">1</field></depends>
+                </field>
+
+                <field id="cc" translate="label comment" type="text" sortOrder="40"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>CC Email(s)</label>
+                    <comment>Optional. Comma-separated email addresses.</comment>
+                    <depends><field id="enabled">1</field></depends>
+                </field>
+            </group>
+
+            <!-- ==================== LOGGING (MageDelight feature) ==================== -->
+            <group id="logging" translate="label" type="text" sortOrder="60"
+                   showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Logging</label>
+
+                <field id="enabled" translate="label comment" type="select" sortOrder="10"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Debug Logging</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Logs blocked zip code attempts and skip events to <code>var/log/custom/delivery_restriction.log</code>.</comment>
+                </field>
+            </group>
+
+        </section>
+    </s>
+</config>
