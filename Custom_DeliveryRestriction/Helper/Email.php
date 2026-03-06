@@ -107,6 +107,17 @@ class Email
         $emails = array_map('trim', explode(',', $rawCc));
         $emails = array_filter($emails, static fn(string $email): bool => $email !== '');
 
-        return array_values(array_unique($emails));
+        $validEmails = [];
+        foreach ($emails as $email) {
+            if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $validEmails[] = $email;
+            } else {
+                $this->logger->warning('[DeliveryRestriction] Skipping invalid CC email address', [
+                    'email' => $email,
+                ]);
+            }
+        }
+
+        return array_values(array_unique($validEmails));
     }
 }

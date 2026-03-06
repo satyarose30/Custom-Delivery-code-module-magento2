@@ -64,8 +64,7 @@ class ShippingInformationPlugin
         $categoryIds = $this->extractCategoryIds($quote);
 
         if (!$this->zipValidator->isAvailable($zipCode, $storeId, $customerGroupId, $categoryIds)) {
-            $template = $this->config->getCheckoutErrorMessage($storeId);
-            $message = str_replace('%1', $zipCode, $template);
+            $message = $this->config->getCheckoutErrorMessageForZip($zipCode, $storeId);
             throw new LocalizedException(__($message));
         }
 

@@ -91,12 +91,11 @@ class Check implements HttpPostActionInterface, CsrfAwareActionInterface
             // 3. Validate
             $storeId     = (int) $this->storeManager->getStore()->getId();
             $isAvailable = $this->zipValidator->isAvailable($rawZip, $storeId);
-            $safeZip     = htmlspecialchars($rawZip, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 
             $payload = [
                 'error'     => false,
                 'available' => $isAvailable,
-                'zip_code'  => $safeZip,
+                'zip_code'  => $rawZip,
             ];
 
             if ($isAvailable) {

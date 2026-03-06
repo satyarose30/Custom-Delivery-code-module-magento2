@@ -56,6 +56,17 @@ define(['jquery', 'mage/translate'], function ($, $t) {
             $btn.prop('disabled', false).removeClass('dr-loading-state');
         }
 
+        function showConnectionError(canRetry) {
+            var message = canRetry
+                ? $t('Connection timeout. Please try again.')
+                : $t('Connection error. Please check your internet and try again.');
+
+            showResult(
+                '<span class="dr-icon-inline">⚠</span> ' + escapeHtml(message),
+                'warning'
+            );
+        }
+
         /**
          * @param {string} html   — already escaped HTML string
          * @param {string} type   — 'available' | 'unavailable' | 'warning'
@@ -70,7 +81,8 @@ define(['jquery', 'mage/translate'], function ($, $t) {
 
         // ── Core check ─────────────────────────────────────────────────────────
 
-        function performCheck() {
+        function performCheck(retryCount) {
+            retryCount = retryCount || 0;
             var zip = $.trim($input.val());
 
             if (!zip) {
@@ -92,18 +104,19 @@ define(['jquery', 'mage/translate'], function ($, $t) {
 
             showLoading();
 
+            var retrying = false;
+
             $.ajax({
                 url:      config.ajaxUrl,
                 type:     'POST',
                 dataType: 'json',
+                timeout:  Number(config.requestTimeoutMs || 8000),
                 data: {
                     zip_code: zip,
                     form_key: config.formKey
                 },
 
                 success: function (resp) {
-                    hideLoading();
-
                     if (!resp || resp.error) {
                         var errMsg = (resp && resp.message) ? resp.message : $t('An error occurred. Please try again.');
                         showResult(
@@ -137,12 +150,19 @@ define(['jquery', 'mage/translate'], function ($, $t) {
                 },
 
                 error: function (xhr, status) {
-                    hideLoading();
-                    showResult(
-                        '<span class="dr-icon-inline">⚠</span> ' +
-                        escapeHtml($t('Connection error. Please check your internet and try again.')),
-                        'warning'
-                    );
+                    if (status === 'timeout' && retryCount < 1) {
+                        retrying = true;
+                        performCheck(retryCount + 1);
+                        return;
+                    }
+
+                    showConnectionError(status === 'timeout');
+                },
+
+                complete: function () {
+                    if (!retrying) {
+                        hideLoading();
+                    }
                 }
             });
         }

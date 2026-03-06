@@ -105,8 +105,7 @@ class ValidateZipOnOrderPlace implements ObserverInterface
             );
 
             // ── Block the order ────────────────────────────────────────────────
-            $template = $this->config->getCheckoutErrorMessage($storeId);
-            $message  = str_replace('%1', htmlspecialchars($zipCode, ENT_QUOTES, 'UTF-8'), $template);
+            $message = $this->config->getCheckoutErrorMessageForZip($zipCode, $storeId);
             throw new LocalizedException(__($message));
         }
     }
