@@ -100,22 +100,26 @@ class Config
 
     public function getWidgetTitle(?int $storeId = null): string
     {
-        return (string) $this->scopeConfig->getValue(self::XML_WIDGET_TITLE, ScopeInterface::SCOPE_STORE, $storeId);
+        $value = trim((string) $this->scopeConfig->getValue(self::XML_WIDGET_TITLE, ScopeInterface::SCOPE_STORE, $storeId));
+        return $value !== '' ? $value : (string) __('Check Delivery Availability');
     }
 
     public function getAvailableMessage(?int $storeId = null): string
     {
-        return (string) $this->scopeConfig->getValue(self::XML_AVAIL_MSG, ScopeInterface::SCOPE_STORE, $storeId);
+        $value = trim((string) $this->scopeConfig->getValue(self::XML_AVAIL_MSG, ScopeInterface::SCOPE_STORE, $storeId));
+        return $value !== '' ? $value : (string) __('Delivery is available for this zip code.');
     }
 
     public function getUnavailableMessage(?int $storeId = null): string
     {
-        return (string) $this->scopeConfig->getValue(self::XML_UNAVAIL_MSG, ScopeInterface::SCOPE_STORE, $storeId);
+        $value = trim((string) $this->scopeConfig->getValue(self::XML_UNAVAIL_MSG, ScopeInterface::SCOPE_STORE, $storeId));
+        return $value !== '' ? $value : (string) __('Sorry, delivery is not available for this zip code.');
     }
 
     public function getInputPlaceholder(?int $storeId = null): string
     {
-        return (string) $this->scopeConfig->getValue(self::XML_PLACEHOLDER, ScopeInterface::SCOPE_STORE, $storeId);
+        $value = trim((string) $this->scopeConfig->getValue(self::XML_PLACEHOLDER, ScopeInterface::SCOPE_STORE, $storeId));
+        return $value !== '' ? $value : (string) __('Enter ZIP / Postal Code');
     }
 
     // ── Delivery estimate ──────────────────────────────────────────────────────
@@ -144,7 +148,8 @@ class Config
 
     public function getCheckoutErrorMessage(?int $storeId = null): string
     {
-        return (string) $this->scopeConfig->getValue(self::XML_CHECKOUT_ERR_MSG, ScopeInterface::SCOPE_STORE, $storeId);
+        $value = trim((string) $this->scopeConfig->getValue(self::XML_CHECKOUT_ERR_MSG, ScopeInterface::SCOPE_STORE, $storeId));
+        return $value !== '' ? $value : (string) __('Sorry, delivery is not available for zip code %1.');
     }
 
     // ── Customer Groups ────────────────────────────────────────────────────────

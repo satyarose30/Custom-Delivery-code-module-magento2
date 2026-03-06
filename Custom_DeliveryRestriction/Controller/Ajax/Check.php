@@ -13,7 +13,7 @@ use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Data\Form\FormKey\Validator as FormKeyValidator;
 use Magento\Store\Model\StoreManagerInterface;
-use Psr\Log\LoggerInterface;
+use Custom\DeliveryRestriction\Logger\Logger;
 
 /**
  * POST /deliveryrestriction/ajax/check
@@ -36,7 +36,7 @@ class Check implements HttpPostActionInterface, CsrfAwareActionInterface
         private readonly Config                $config,
         private readonly FormKeyValidator      $formKeyValidator,
         private readonly StoreManagerInterface $storeManager,
-        private readonly LoggerInterface       $logger
+        private readonly Logger                $logger
     ) {}
 
     // ── CsrfAwareActionInterface ────────────────────────────────────────────────
