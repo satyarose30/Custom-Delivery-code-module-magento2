@@ -76,7 +76,8 @@ class ZipValidator
 
         // ── Determine zip source ───────────────────────────────────────────────
         if ($this->config->useDbZipCodes($storeId)) {
-            return $this->checkAgainstDb($zipCode, $storeId, $customerGroupId, $categoryIds);
+            $effectiveGroupId = $customerGroupId ?? $this->resolveCustomerGroupId();
+            return $this->checkAgainstDb($zipCode, $storeId, $effectiveGroupId, $categoryIds);
         }
 
         return $this->checkAgainstConfig($zipCode, $storeId);
@@ -162,7 +163,7 @@ class ZipValidator
     private function checkAgainstDb(
         string $zipCode,
         ?int   $storeId,
-        ?int   $customerGroupId,
+        int    $customerGroupId,
         array  $categoryIds
     ): bool {
         $collection = $this->zipCollectionFactory->create();
@@ -172,9 +173,7 @@ class ZipValidator
             $collection->addStoreFilter($storeId);
         }
 
-        if ($customerGroupId !== null) {
-            $collection->addCustomerGroupFilter($customerGroupId);
-        }
+        $collection->addCustomerGroupFilter($customerGroupId);
 
         $records = $collection->getItems();
 
@@ -189,9 +188,9 @@ class ZipValidator
             /** @var \Custom\DeliveryRestriction\Model\ZipCode $record */
             $recordCategories = $record->getCategoryIdsArray();
 
-            // Skip record if category scoping doesn't match current cart
-            if ($recordCategories !== [] && $categoryIds !== []) {
-                if (array_intersect($recordCategories, $categoryIds) === []) {
+            // Apply category-scoped rules only when category context is available
+            if ($recordCategories !== []) {
+                if ($categoryIds === [] || array_intersect($recordCategories, $categoryIds) === []) {
                     continue;
                 }
             }

@@ -8,6 +8,7 @@ use Custom\DeliveryRestriction\Model\ZipValidator;
 use Magento\Checkout\Api\Data\ShippingInformationInterface;
 use Magento\Checkout\Model\ShippingInformationManagement;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Store\Model\StoreManagerInterface;
 
 /**
@@ -23,9 +24,10 @@ use Magento\Store\Model\StoreManagerInterface;
 class ShippingInformationPlugin
 {
     public function __construct(
-        private readonly Config                $config,
-        private readonly ZipValidator          $zipValidator,
-        private readonly StoreManagerInterface $storeManager
+        private readonly Config $config,
+        private readonly ZipValidator $zipValidator,
+        private readonly StoreManagerInterface $storeManager,
+        private readonly CartRepositoryInterface $cartRepository
     ) {}
 
     /**
@@ -37,9 +39,9 @@ class ShippingInformationPlugin
      * @throws LocalizedException
      */
     public function beforeSaveAddressInformation(
-        ShippingInformationManagement  $subject,
-        int                            $cartId,
-        ShippingInformationInterface   $addressInformation
+        ShippingInformationManagement $subject,
+        int $cartId,
+        ShippingInformationInterface $addressInformation
     ): array {
         $storeId = (int) $this->storeManager->getStore()->getId();
 
@@ -57,12 +59,42 @@ class ShippingInformationPlugin
             return [$cartId, $addressInformation];
         }
 
-        if (!$this->zipValidator->isAvailable($zipCode, $storeId)) {
+        $quote = $this->cartRepository->getActive($cartId);
+        $customerGroupId = (int) $quote->getCustomerGroupId();
+        $categoryIds = $this->extractCategoryIds($quote);
+
+        if (!$this->zipValidator->isAvailable($zipCode, $storeId, $customerGroupId, $categoryIds)) {
             $template = $this->config->getCheckoutErrorMessage($storeId);
-            $message  = str_replace('%1', htmlspecialchars($zipCode, ENT_QUOTES, 'UTF-8'), $template);
+            $message = str_replace('%1', $zipCode, $template);
             throw new LocalizedException(__($message));
         }
 
         return [$cartId, $addressInformation];
+    }
+
+    /**
+     * @return int[]
+     */
+    private function extractCategoryIds(\Magento\Quote\Model\Quote $quote): array
+    {
+        $categoryIds = [];
+
+        foreach ($quote->getAllVisibleItems() as $item) {
+            $product = $item->getProduct();
+            if ($product === null) {
+                continue;
+            }
+
+            $cats = $product->getCategoryIds();
+            if (!is_array($cats)) {
+                continue;
+            }
+
+            foreach ($cats as $catId) {
+                $categoryIds[(int) $catId] = true;
+            }
+        }
+
+        return array_keys($categoryIds);
     }
 }
